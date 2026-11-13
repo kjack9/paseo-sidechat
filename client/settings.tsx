@@ -113,7 +113,7 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
   };
 
   const commitZoom = async (value: number) => {
-    const next = clampZoom(value);
+    const next = snapZoom(value);
     setZoom(next);
     setZoomText(formatZoom(next));
     if (!ready || !values || values.zoom === next) {

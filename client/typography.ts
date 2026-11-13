@@ -6,7 +6,7 @@ export function clampZoom(value: number): number {
 
 export function snapZoom(value: number): number {
   const snapped = Math.round(clampZoom(value) / ZOOM_STEP) * ZOOM_STEP;
-  return Number(clampZoom(snapped).toFixed(2));
+  return Number(clampZoom(snapped).toFixed(3));
 }
 
 export function formatZoom(value: number): string {

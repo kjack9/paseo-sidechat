@@ -65,7 +65,7 @@
     "boldColor": "加粗颜色",
     "highlightColor": "高亮颜色",
     "zoomLabel": "文字大小",
-    "zoomHint": "滑块以 0.25 为步进；也可以输入 0.5 到 2.0 之间的任意值。",
+    "zoomHint": "滑块和输入框均以 0.025 为步进，范围为 0.5 到 2.0。",
     "zoomIncrease": "增大文字",
     "zoomDecrease": "缩小文字",
     "preview": "预览",
