@@ -1,7 +1,6 @@
 import { type PluginSurfaceProps, useSettings, useTranslation } from "@getpaseo/plugin/client";
-import { SettingsSelect, SettingsSwitch } from "@getpaseo/plugin/client/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Text, TextInput, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, ScrollView, Switch, Text, TextInput, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
 import { btwSettingsDefinition, colorModeSchema, type ColorMode, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from "../shared/settings";
 import { messages } from "./messages";
 import { MarkdownView } from "./markdown";
@@ -57,6 +56,12 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
       settingGroup: { gap: 4 },
       settingLabel: { color: theme.colors.foreground, fontSize: layout.compact ? 12 : 13, fontWeight: "600" as const },
       settingHint: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 10 : 11 },
+      colorChoices: { flexDirection: "row" as const, alignItems: "center" as const, gap: 6, paddingVertical: 2 },
+      colorOption: { borderRadius: 16, borderWidth: 1, borderColor: theme.colors.border, paddingHorizontal: 10, paddingVertical: 6 },
+      colorOptionSelected: { backgroundColor: theme.colors.accent, borderColor: theme.colors.accent },
+      colorOptionText: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 10 : 11 },
+      colorOptionTextSelected: { color: theme.colors.accentForeground, fontWeight: "700" as const },
+      settingSwitchRow: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "flex-end" as const },
       settingInput: {
         borderRadius: 8,
         borderWidth: 1,
@@ -141,13 +146,26 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
   const colorSelect = (label: string, field: "headingColor" | "boldColor" | "highlightColor") => (
     <View style={styles.settingGroup}>
       <Text style={styles.settingLabel}>{label}</Text>
-      <SettingsSelect
-        label=""
-        value={values?.[field] ?? "default"}
-        options={COLOR_MODES.map((mode) => ({ label: t(`settings.colorModes.${mode}`), value: mode }))}
-        onValueChange={(value) => save({ [field]: value })}
-        disabled={!ready}
-      />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.colorChoices}>
+        {COLOR_MODES.map((mode) => {
+          const selected = (values?.[field] ?? "default") === mode;
+          return (
+            <Pressable
+              key={mode}
+              accessibilityRole="radio"
+              accessibilityLabel={t(`settings.colorModes.${mode}`)}
+              accessibilityState={{ selected, disabled: !ready }}
+              disabled={!ready}
+              onPress={() => save({ [field]: mode })}
+              style={[styles.colorOption, selected && styles.colorOptionSelected]}
+            >
+              <Text style={[styles.colorOptionText, selected && styles.colorOptionTextSelected]}>
+                {t(`settings.colorModes.${mode}`)}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 
@@ -204,24 +222,34 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
         <View style={styles.settingGroup}>
           <Text style={styles.settingLabel}>{t("settings.attachSwitch")}</Text>
           <Text style={styles.settingHint}>{t("settings.attachHint")}</Text>
-          <SettingsSwitch
-            label=""
-            hint=""
-            value={values?.attachToMain ?? true}
-            onValueChange={(value) => save({ attachToMain: value })}
-            disabled={!ready}
-          />
+          <View style={styles.settingSwitchRow}>
+            <Switch
+              accessibilityLabel={t("settings.attachSwitch")}
+              value={values?.attachToMain ?? true}
+              onValueChange={(value) => {
+                void save({ attachToMain: value });
+              }}
+              disabled={!ready}
+              trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
+              thumbColor={theme.colors.surface0}
+            />
+          </View>
         </View>
         <View style={styles.settingGroup}>
           <Text style={styles.settingLabel}>{t("settings.autoArchiveSwitch")}</Text>
           <Text style={styles.settingHint}>{t("settings.autoArchiveHint")}</Text>
-          <SettingsSwitch
-            label=""
-            hint=""
-            value={values?.autoArchive ?? false}
-            onValueChange={(value) => save({ autoArchive: value })}
-            disabled={!ready}
-          />
+          <View style={styles.settingSwitchRow}>
+            <Switch
+              accessibilityLabel={t("settings.autoArchiveSwitch")}
+              value={values?.autoArchive ?? false}
+              onValueChange={(value) => {
+                void save({ autoArchive: value });
+              }}
+              disabled={!ready}
+              trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
+              thumbColor={theme.colors.surface0}
+            />
+          </View>
         </View>
         <View style={styles.settingGroup}>
           <Text style={styles.settingLabel}>{t("settings.idleMinutesLabel")}</Text>
