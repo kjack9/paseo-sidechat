@@ -64,6 +64,10 @@
     "headingColor": "标题颜色",
     "boldColor": "加粗颜色",
     "highlightColor": "高亮颜色",
+    "zoomLabel": "文字大小",
+    "zoomHint": "调整侧聊文字比例：0.5 到 2.0，每次 0.1。",
+    "zoomIncrease": "增大文字",
+    "zoomDecrease": "缩小文字",
     "preview": "预览",
     "previewMarkdown": "### 标题样式\n正文里可以有**加粗文字**、==高亮文字==和`行内代码`。\n- 列表项带**加粗**\n- 列表项带==高亮==",
     "colorModes": {

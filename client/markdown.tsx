@@ -3,6 +3,7 @@ import { Text, View, type TextStyle } from "react-native";
 import type { PluginTheme } from "@getpaseo/plugin";
 import { useSettings } from "@getpaseo/plugin/client";
 import { btwSettingsDefinition, type ColorMode } from "../shared/settings";
+import { scaleTextStyles } from "./typography";
 
 type Segment = { text: string; bold: boolean; code: boolean; highlight: boolean };
 
@@ -251,6 +252,7 @@ function InlineText({
 export function MarkdownView({ markdown, theme, compact }: { markdown: string; theme: PluginTheme; compact: boolean }) {
   const settings = useSettings(btwSettingsDefinition);
   const savedColors = settings.status === "ready" ? settings.values : null;
+  const zoom = savedColors?.zoom ?? 1;
   const headingColor = resolveColor(savedColors?.headingColor ?? "default", theme, theme.colors.foreground);
   const boldColor = resolveColor(savedColors?.boldColor ?? "default", theme, theme.colors.foreground);
   const highlightColor = resolveColor(
@@ -266,7 +268,7 @@ export function MarkdownView({ markdown, theme, compact }: { markdown: string; t
 
   const styles = useMemo(() => {
     const bodySize = compact ? 13 : 14;
-    return {
+    return scaleTextStyles({
       body: { color: theme.colors.foreground, fontSize: bodySize, lineHeight: bodySize * 1.55 },
       codeBlock: {
         backgroundColor: theme.colors.surface1,
@@ -304,8 +306,8 @@ export function MarkdownView({ markdown, theme, compact }: { markdown: string; t
         lineHeight: (bodySize - 1) * 1.5,
         fontWeight: "700" as const,
       },
-    };
-  }, [theme, compact, headingColor]);
+    }, zoom);
+  }, [theme, compact, headingColor, zoom]);
 
   const blocks = useMemo(() => parseBlocks(markdown), [markdown]);
 

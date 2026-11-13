@@ -1,11 +1,13 @@
 import type { PluginAgentPanelProps } from "@getpaseo/plugin/client";
-import { useAgent, usePaseo, useRpc, useTabState, useTranslation } from "@getpaseo/plugin/client";
+import { useAgent, usePaseo, useRpc, useSettings, useTabState, useTranslation } from "@getpaseo/plugin/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { z } from "zod";
 import { btwAsk, btwClear, btwStatus, btwModeSchema, type BtwMode, type BtwQuestion } from "../shared/contracts";
 import { messages } from "./messages";
 import { MarkdownView } from "./markdown";
+import { btwSettingsDefinition } from "../shared/settings";
+import { scaleTextStyles } from "./typography";
 
 interface ModelOption {
   id: string;
@@ -39,6 +41,8 @@ export function BtwPanel({ theme, layout, params, navigation, tab }: PluginAgent
   const statusRpc = useRpc(btwStatus);
   const clearRpc = useRpc(btwClear);
   const { t, locale } = useTranslation(messages);
+  const savedSettings = useSettings(btwSettingsDefinition);
+  const zoom = savedSettings.status === "ready" ? savedSettings.values.zoom : 1;
 
   const agent = useAgent(agentId, (value) => ({
     title: value.title,
@@ -127,7 +131,7 @@ export function BtwPanel({ theme, layout, params, navigation, tab }: PluginAgent
 
   const styles = useMemo(() => {
     const pad = layout.compact ? 10 : 14;
-    return {
+    return scaleTextStyles({
       screen: { flex: 1, backgroundColor: theme.colors.surface0 },
       header: {
         paddingHorizontal: pad,
@@ -304,8 +308,8 @@ export function BtwPanel({ theme, layout, params, navigation, tab }: PluginAgent
       modeOptionActive: { backgroundColor: theme.colors.accent },
       modeOptionText: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 11 : 12 },
       modeOptionTextActive: { color: theme.colors.accentForeground, fontWeight: "700" as const },
-    };
-  }, [theme, layout.compact]);
+    }, zoom);
+  }, [theme, layout.compact, zoom]);
 
   /**
    * The daemon raises language-neutral SIDECHAT_* error codes (optionally

@@ -4,10 +4,14 @@ import { z } from "zod";
 export const colorModeSchema = z.enum(["default", "accent", "muted", "success", "warning", "danger"]);
 export type ColorMode = z.infer<typeof colorModeSchema>;
 
+export const ZOOM_MIN = 0.5;
+export const ZOOM_MAX = 2;
+export const ZOOM_STEP = 0.1;
+
 export const btwSettingsDefinition = defineSettings({
   id: "btw-settings",
   scope: "host",
-  version: 7,
+  version: 8,
   schema: z.object({
     autoArchive: z.boolean().default(false),
     idleMinutes: z.number().int().min(1).max(1440).default(10),
@@ -17,8 +21,9 @@ export const btwSettingsDefinition = defineSettings({
     boldColor: colorModeSchema.default("default"),
     highlightColor: colorModeSchema.default("default"),
     highlightBgColor: colorModeSchema.default("accent"),
+    zoom: z.number().min(ZOOM_MIN).max(ZOOM_MAX).multipleOf(ZOOM_STEP).default(1),
   }),
-  // v7 dropped the plugin-managed language override; UI text now follows the app language
+  // v7 dropped the plugin-managed language override; v8 adds defaulted text zoom.
   migrate: (values) => {
     if (typeof values === "object" && values !== null && "language" in values) {
       const { language: _dropped, ...rest } = values as Record<string, unknown>;

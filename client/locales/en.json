@@ -64,6 +64,10 @@
     "headingColor": "Heading color",
     "boldColor": "Bold color",
     "highlightColor": "Highlight color",
+    "zoomLabel": "Text size",
+    "zoomHint": "Scale Side Chat text from 0.5 to 2.0 in steps of 0.1.",
+    "zoomIncrease": "Increase text size",
+    "zoomDecrease": "Decrease text size",
     "preview": "Preview",
     "previewMarkdown": "### Heading style\nBody text can have **bold**, ==highlight==, and `inline code`.\n- List item with **bold**\n- List item with ==highlight==",
     "colorModes": {
