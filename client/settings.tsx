@@ -144,7 +144,7 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
   };
 
   const colorSelect = (label: string, field: "headingColor" | "boldColor" | "highlightColor") => (
-    <View style={styles.settingGroup}>
+    <View style={styles.settingGroup} accessibilityRole="radiogroup" accessibilityLabel={label}>
       <Text style={styles.settingLabel}>{label}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.colorChoices}>
         {COLOR_MODES.map((mode) => {
@@ -153,7 +153,7 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
             <Pressable
               key={mode}
               accessibilityRole="radio"
-              accessibilityLabel={t(`settings.colorModes.${mode}`)}
+              accessibilityLabel={`${label}: ${t(`settings.colorModes.${mode}`)}`}
               accessibilityState={{ selected, disabled: !ready }}
               disabled={!ready}
               onPress={() => save({ [field]: mode })}
