@@ -65,7 +65,7 @@
     "boldColor": "Bold color",
     "highlightColor": "Highlight color",
     "zoomLabel": "Text size",
-    "zoomHint": "Scale Side Chat text from 0.5 to 2.0 in steps of 0.1.",
+    "zoomHint": "Scale Side Chat text from 0.5 to 2.0 in steps of 0.25.",
     "zoomIncrease": "Increase text size",
     "zoomDecrease": "Decrease text size",
     "preview": "Preview",

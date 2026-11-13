@@ -65,7 +65,7 @@
     "boldColor": "加粗颜色",
     "highlightColor": "高亮颜色",
     "zoomLabel": "文字大小",
-    "zoomHint": "调整侧聊文字比例：0.5 到 2.0，每次 0.1。",
+    "zoomHint": "调整侧聊文字比例：0.5 到 2.0，每次 0.25。",
     "zoomIncrease": "增大文字",
     "zoomDecrease": "缩小文字",
     "preview": "预览",

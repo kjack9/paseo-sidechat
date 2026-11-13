@@ -2,11 +2,11 @@ import { ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from "../shared/settings";
 
 export function normalizeZoom(value: number): number {
   const snapped = Math.round(value / ZOOM_STEP) * ZOOM_STEP;
-  return Number(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, snapped)).toFixed(1));
+  return Number(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, snapped)).toFixed(2));
 }
 
 export function formatZoom(value: number): string {
-  return normalizeZoom(value).toFixed(1);
+  return String(normalizeZoom(value));
 }
 
 /** Scale every explicit font size and line height in a component's style map. */
