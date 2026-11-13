@@ -21,16 +21,12 @@ export const btwSettingsDefinition = defineSettings({
     boldColor: colorModeSchema.default("default"),
     highlightColor: colorModeSchema.default("default"),
     highlightBgColor: colorModeSchema.default("accent"),
-    zoom: z.number().min(ZOOM_MIN).max(ZOOM_MAX).multipleOf(ZOOM_STEP).default(1),
+    zoom: z.number().min(ZOOM_MIN).max(ZOOM_MAX).default(1),
   }),
-  // v7 dropped the plugin-managed language override; v8 added text zoom; v9 snaps old tenths to quarter steps.
+  // v7 dropped the plugin-managed language override; v8 added defaulted text zoom.
   migrate: (values) => {
     if (typeof values === "object" && values !== null && !Array.isArray(values)) {
       const { language: _dropped, ...rest } = values as Record<string, unknown>;
-      if (typeof rest.zoom === "number" && Number.isFinite(rest.zoom)) {
-        const snapped = Math.round(rest.zoom / ZOOM_STEP) * ZOOM_STEP;
-        rest.zoom = Number(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, snapped)).toFixed(2));
-      }
       return rest;
     }
     return values;

@@ -4,7 +4,7 @@ import { Pressable, ScrollView, Switch, Text, TextInput, View, type GestureRespo
 import { btwSettingsDefinition, colorModeSchema, type ColorMode, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from "../shared/settings";
 import { messages } from "./messages";
 import { MarkdownView } from "./markdown";
-import { formatZoom, normalizeZoom, scaleTextStyles } from "./typography";
+import { clampZoom, formatZoom, scaleTextStyles, snapZoom } from "./typography";
 
 const COLOR_MODES: readonly ColorMode[] = ["default", "accent", "muted", "success", "warning", "danger"];
 
@@ -106,14 +106,14 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
   };
 
   const updateZoomDraft = (value: number, syncText = true) => {
-    const next = normalizeZoom(value);
+    const next = clampZoom(value);
     setZoom(next);
     if (syncText) setZoomText(formatZoom(next));
     setZoomLocalDirty(true);
   };
 
   const commitZoom = async (value: number) => {
-    const next = normalizeZoom(value);
+    const next = clampZoom(value);
     setZoom(next);
     setZoomText(formatZoom(next));
     if (!ready || !values || values.zoom === next) {
@@ -320,14 +320,14 @@ function ZoomSlider({
   const updateFromEvent = (event: GestureResponderEvent, commit = false) => {
     if (disabled) return;
     const ratio = Math.max(0, Math.min(1, event.nativeEvent.locationX / Math.max(width, 1)));
-    const next = normalizeZoom(ZOOM_MIN + ratio * (ZOOM_MAX - ZOOM_MIN));
+    const next = snapZoom(ZOOM_MIN + ratio * (ZOOM_MAX - ZOOM_MIN));
     onChange(next);
     if (commit) onCommit(next);
   };
   const onAccessibilityAction = (event: { nativeEvent: { actionName: string } }) => {
     if (disabled) return;
     const direction = event.nativeEvent.actionName === "increment" ? 1 : -1;
-    const next = normalizeZoom(value + direction * ZOOM_STEP);
+    const next = snapZoom(value + direction * ZOOM_STEP);
     onChange(next);
     onCommit(next);
   };
