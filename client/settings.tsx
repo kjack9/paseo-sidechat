@@ -1,5 +1,5 @@
 import { type PluginSurfaceProps, useSettings, useTranslation } from "@getpaseo/plugin/client";
-import { SettingsInput, SettingsSection, SettingsSelect, SettingsSwitch } from "@getpaseo/plugin/client/ui";
+import { SettingsSelect, SettingsSwitch } from "@getpaseo/plugin/client/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextInput, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
 import { btwSettingsDefinition, colorModeSchema, type ColorMode, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from "../shared/settings";
@@ -51,6 +51,22 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
       previewLabel: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 11 : 12, marginBottom: 4 },
       zoomLabel: { color: theme.colors.foreground, fontSize: layout.compact ? 13 : 14, fontWeight: "700" as const },
       zoomHint: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 11 : 12 },
+      section: { gap: 8 },
+      sectionTitle: { color: theme.colors.foreground, fontSize: layout.compact ? 15 : 16, fontWeight: "700" as const },
+      sectionInfo: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 11 : 12 },
+      settingGroup: { gap: 4 },
+      settingLabel: { color: theme.colors.foreground, fontSize: layout.compact ? 12 : 13, fontWeight: "600" as const },
+      settingHint: { color: theme.colors.foregroundMuted, fontSize: layout.compact ? 10 : 11 },
+      settingInput: {
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        backgroundColor: theme.colors.surface1,
+        color: theme.colors.foreground,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        fontSize: layout.compact ? 12 : 13,
+      },
       preview: {
         borderRadius: 10,
         borderWidth: 1,
@@ -123,18 +139,23 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
   };
 
   const colorSelect = (label: string, field: "headingColor" | "boldColor" | "highlightColor") => (
-    <SettingsSelect
-      label={label}
-      value={values?.[field] ?? "default"}
-      options={COLOR_MODES.map((mode) => ({ label: t(`settings.colorModes.${mode}`), value: mode }))}
-      onValueChange={(value) => save({ [field]: value })}
-      disabled={!ready}
-    />
+    <View style={styles.settingGroup}>
+      <Text style={styles.settingLabel}>{label}</Text>
+      <SettingsSelect
+        label=""
+        value={values?.[field] ?? "default"}
+        options={COLOR_MODES.map((mode) => ({ label: t(`settings.colorModes.${mode}`), value: mode }))}
+        onValueChange={(value) => save({ [field]: value })}
+        disabled={!ready}
+      />
+    </View>
   );
 
   return (
     <View style={styles.screen}>
-      <SettingsSection title={t("settings.appearanceSection")} info={t("settings.appearanceInfo")}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t("settings.appearanceSection")}</Text>
+        <Text style={styles.sectionInfo}>{t("settings.appearanceInfo")}</Text>
         {colorSelect(t("settings.headingColor"), "headingColor")}
         {colorSelect(t("settings.boldColor"), "boldColor")}
         {colorSelect(t("settings.highlightColor"), "highlightColor")}
@@ -176,45 +197,67 @@ export function BtwSettingsScreen({ theme, layout }: PluginSurfaceProps) {
             <MarkdownView markdown={previewMarkdown} theme={theme} compact={layout.compact} />
           </View>
         </View>
-      </SettingsSection>
-      <SettingsSection title={t("settings.lifecycleSection")} info={t("settings.lifecycleInfo")}>
-        <SettingsSwitch
-          label={t("settings.attachSwitch")}
-          hint={t("settings.attachHint")}
-          value={values?.attachToMain ?? true}
-          onValueChange={(value) => save({ attachToMain: value })}
-          disabled={!ready}
-        />
-        <SettingsSwitch
-          label={t("settings.autoArchiveSwitch")}
-          hint={t("settings.autoArchiveHint")}
-          value={values?.autoArchive ?? false}
-          onValueChange={(value) => save({ autoArchive: value })}
-          disabled={!ready}
-        />
-        <SettingsInput
-          label={t("settings.idleMinutesLabel")}
-          hint={t("settings.idleMinutesHint")}
-          initialValue={idleText ?? ""}
-          onChangeText={(text) => {
-            setIdleText(text);
-            scheduleIntSave("idleMinutes", text, 1440);
-          }}
-          disabled={!ready || !(values?.autoArchive ?? false)}
-        />
-      </SettingsSection>
-      <SettingsSection title={t("settings.contextSection")} info={t("settings.contextInfo")}>
-        <SettingsInput
-          label={t("settings.contextMessagesLabel")}
-          hint={t("settings.contextMessagesHint", { range: "1 - 50" })}
-          initialValue={contextText ?? ""}
-          onChangeText={(text) => {
-            setContextText(text);
-            scheduleIntSave("contextMessages", text, 50);
-          }}
-          disabled={!ready}
-        />
-      </SettingsSection>
+      </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t("settings.lifecycleSection")}</Text>
+        <Text style={styles.sectionInfo}>{t("settings.lifecycleInfo")}</Text>
+        <View style={styles.settingGroup}>
+          <Text style={styles.settingLabel}>{t("settings.attachSwitch")}</Text>
+          <Text style={styles.settingHint}>{t("settings.attachHint")}</Text>
+          <SettingsSwitch
+            label=""
+            hint=""
+            value={values?.attachToMain ?? true}
+            onValueChange={(value) => save({ attachToMain: value })}
+            disabled={!ready}
+          />
+        </View>
+        <View style={styles.settingGroup}>
+          <Text style={styles.settingLabel}>{t("settings.autoArchiveSwitch")}</Text>
+          <Text style={styles.settingHint}>{t("settings.autoArchiveHint")}</Text>
+          <SettingsSwitch
+            label=""
+            hint=""
+            value={values?.autoArchive ?? false}
+            onValueChange={(value) => save({ autoArchive: value })}
+            disabled={!ready}
+          />
+        </View>
+        <View style={styles.settingGroup}>
+          <Text style={styles.settingLabel}>{t("settings.idleMinutesLabel")}</Text>
+          <Text style={styles.settingHint}>{t("settings.idleMinutesHint")}</Text>
+          <TextInput
+            accessibilityLabel={t("settings.idleMinutesLabel")}
+            value={idleText ?? ""}
+            onChangeText={(text) => {
+              setIdleText(text);
+              scheduleIntSave("idleMinutes", text, 1440);
+            }}
+            editable={ready && (values?.autoArchive ?? false)}
+            keyboardType="number-pad"
+            style={styles.settingInput}
+          />
+        </View>
+      </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t("settings.contextSection")}</Text>
+        <Text style={styles.sectionInfo}>{t("settings.contextInfo")}</Text>
+        <View style={styles.settingGroup}>
+          <Text style={styles.settingLabel}>{t("settings.contextMessagesLabel")}</Text>
+          <Text style={styles.settingHint}>{t("settings.contextMessagesHint", { range: "1 - 50" })}</Text>
+          <TextInput
+            accessibilityLabel={t("settings.contextMessagesLabel")}
+            value={contextText ?? ""}
+            onChangeText={(text) => {
+              setContextText(text);
+              scheduleIntSave("contextMessages", text, 50);
+            }}
+            editable={ready}
+            keyboardType="number-pad"
+            style={styles.settingInput}
+          />
+        </View>
+      </View>
       {settings.saveError ? <Text style={styles.error}>{settings.saveError}</Text> : null}
     </View>
   );
